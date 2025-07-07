@@ -1,0 +1,22 @@
+[  {
+    "id": 1,
+    "status": true,
+    "title": "Remera Negra",
+    "description": "Remera de algodón 100%",
+    "code": "RN001",
+    "price": 3500,
+    "stock": 20,
+    "category": "ropa",
+    "thumbnails": ["remera1.jpg"]
+  },
+  {
+    "id": 2,
+    "status": true,
+    "title": "Gorra Azul",
+    "description": "Gorra ajustable con visera curva",
+    "code": "GA002",
+    "price": 2500,
+    "stock": 15,
+    "category": "accesorios",
+    "thumbnails": ["gorra1.jpg"]
+  }]
