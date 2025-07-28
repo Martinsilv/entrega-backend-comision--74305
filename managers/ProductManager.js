@@ -53,5 +53,5 @@ class ProductManager {
     await fs.promises.writeFile(this.filePath, JSON.stringify(newList, null, 2));
   }
 }
-
-module.exports = ProductManager;
+module.exports = ProductManager;;
+  

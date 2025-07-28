@@ -1,4 +1,5 @@
-[  {
+[
+  {
     "id": 1,
     "status": true,
     "title": "Remera Negra",
@@ -7,7 +8,9 @@
     "price": 3500,
     "stock": 20,
     "category": "ropa",
-    "thumbnails": ["remera1.jpg"]
+    "thumbnails": [
+      "remera1.jpg"
+    ]
   },
   {
     "id": 2,
@@ -18,5 +21,32 @@
     "price": 2500,
     "stock": 15,
     "category": "accesorios",
-    "thumbnails": ["gorra1.jpg"]
-  }]
+    "thumbnails": [
+      "gorra1.jpg"
+    ]
+  },
+  {
+    "id": 3,
+    "status": true,
+    "title": "Ramen instantáneo",
+    "description": "Ramen japonés tradicional",
+    "code": "RAMEN123",
+    "price": 350,
+    "stock": 50,
+    "category": "comida",
+    "thumbnails": [
+      "url_de_imagen.jpg"
+    ]
+  },
+  {
+    "id": 4,
+    "status": true,
+    "title": "bebida de frutilla",
+    "description": "bebida gaseoa de frutilla",
+    "code": "RN002",
+    "price": 5000,
+    "stock": 10,
+    "category": "refresco",
+    "thumbnails": []
+  }
+]

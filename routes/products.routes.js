@@ -1,48 +1,49 @@
-const express = require('express');
-const router = express.Router();
-const ProductManager = require('../managers/ProductManager');
-const productManager = new ProductManager();
+import { Router } from 'express';
+import ProductManager from '../managers/ProductManager.js';
 
+const router = Router();
+const productManager = new ProductManager('./data/products.json');
+
+// Obtener todos los productos
 router.get('/', async (req, res) => {
   const products = await productManager.getProducts();
   res.json(products);
 });
 
+// Obtener un producto por ID
 router.get('/:pid', async (req, res) => {
-  const product = await productManager.getProductById(req.params.pid);
-  if (!product) return res.status(404).json({ error: 'Producto no encontrado' });
-  res.json(product);
+  const product = await productManager.getProductById(parseInt(req.params.pid));
+  if (product) {
+    res.json(product);
+  } else {
+    res.status(404).json({ error: 'Producto no encontrado' });
+  }
 });
 
+// Agregar un producto
 router.post('/', async (req, res) => {
-  const { title, description, code, price, stock, category, thumbnails } = req.body;
-
-  if (!title || !description || !code || !price || !stock || !category) {
-    return res.status(400).json({ error: 'Faltan campos obligatorios' });
-  }
-
-  const newProduct = await productManager.addProduct({
-    title,
-    description,
-    code,
-    price,
-    stock,
-    category,
-    thumbnails: thumbnails || []
-  });
-
+  const newProduct = await productManager.addProduct(req.body);
   res.status(201).json(newProduct);
 });
 
+// Actualizar un producto
 router.put('/:pid', async (req, res) => {
-  const updated = await productManager.updateProduct(req.params.pid, req.body);
-  if (!updated) return res.status(404).json({ error: 'Producto no encontrado' });
-  res.json(updated);
+  const updatedProduct = await productManager.updateProduct(parseInt(req.params.pid), req.body);
+  if (updatedProduct) {
+    res.json(updatedProduct);
+  } else {
+    res.status(404).json({ error: 'Producto no encontrado' });
+  }
 });
 
+// Eliminar un producto
 router.delete('/:pid', async (req, res) => {
-  await productManager.deleteProduct(req.params.pid);
-  res.json({ mensaje: 'Producto eliminado' });
+  const result = await productManager.deleteProduct(parseInt(req.params.pid));
+  if (result) {
+    res.json({ message: 'Producto eliminado' });
+  } else {
+    res.status(404).json({ error: 'Producto no encontrado' });
+  }
 });
 
-module.exports = router;
+export default router;
