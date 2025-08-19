@@ -1,48 +1,54 @@
-import { Router } from 'express';
-import ProductManager from '../managers/ProductManager.js';
+import { Router } from "express";
+import ProductManager from "../managers/ProductManager.js";
 
 const router = Router();
-const productManager = new ProductManager('./data/products.json');
+const productManager = new ProductManager("products.json");
 
 // Obtener todos los productos
-router.get('/', async (req, res) => {
-  const products = await productManager.getProducts();
-  res.json(products);
+router.get("/", async (req, res) => {
+  try {
+    const products = await productManager.getProducts();
+    res.json(products);
+  } catch (error) {
+    console.error("Error al obtener los productos:", error);
+    res.status(500).json({ error: "Error interno al obtener los productos" });
+  }
 });
 
-// Obtener un producto por ID
-router.get('/:pid', async (req, res) => {
-  const product = await productManager.getProductById(parseInt(req.params.pid));
-  if (product) {
+// Obtener producto p
+router.get("/:pid", async (req, res) => {
+  const { pid } = req.params;
+  try {
+    if (isNaN(pid)) {
+      return res.status(400).json({ error: "El ID debe ser un número" });
+    }
+
+    const product = await productManager.getProductById(parseInt(pid));
+    if (!product) {
+      return res.status(404).json({ error: "Producto no encontrado" });
+    }
+
     res.json(product);
-  } else {
-    res.status(404).json({ error: 'Producto no encontrado' });
+  } catch (error) {
+    console.error("Error al obtener producto por ID:", error);
+    res.status(500).json({ error: "Error interno al obtener el producto" });
   }
 });
 
-// Agregar un producto
-router.post('/', async (req, res) => {
-  const newProduct = await productManager.addProduct(req.body);
-  res.status(201).json(newProduct);
-});
+// Agregar producto
+router.post("/", async (req, res) => {
+  try {
+    const { title, price, stock } = req.body;
 
-// Actualizar un producto
-router.put('/:pid', async (req, res) => {
-  const updatedProduct = await productManager.updateProduct(parseInt(req.params.pid), req.body);
-  if (updatedProduct) {
-    res.json(updatedProduct);
-  } else {
-    res.status(404).json({ error: 'Producto no encontrado' });
-  }
-});
+    if (!title || !price || !stock) {
+      return res.status(400).json({ error: "Faltan campos obligatorios" });
+    }
 
-// Eliminar un producto
-router.delete('/:pid', async (req, res) => {
-  const result = await productManager.deleteProduct(parseInt(req.params.pid));
-  if (result) {
-    res.json({ message: 'Producto eliminado' });
-  } else {
-    res.status(404).json({ error: 'Producto no encontrado' });
+    const newProduct = await productManager.addProduct(req.body);
+    res.status(201).json(newProduct);
+  } catch (error) {
+    console.error("Error al agregar producto:", error);
+    res.status(500).json({ error: "Error interno al agregar producto" });
   }
 });
 

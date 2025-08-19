@@ -1,32 +1,42 @@
 const socket = io();
 
 const form = document.getElementById('productForm');
-const productList = document.getElementById('productList');
+const productList = document.getElementById('productsList');
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
 
   const formData = new FormData(form);
-  const product = Object.fromEntries(formData.entries());
-  product.price = Number(product.price);
-  product.stock = Number(product.stock);
+  const thumbnailsRaw = formData.get('thumbnails');
+  const thumbnails = thumbnailsRaw ? thumbnailsRaw.split(',').map(s => s.trim()) : [];
+
+  const product = {
+    title: formData.get('title'),
+    description: formData.get('description'),
+    code: formData.get('code'),
+    price: Number(formData.get('price')),
+    status: formData.get('status') === 'on',
+    stock: Number(formData.get('stock')),
+    category: formData.get('category'),
+    thumbnails
+  };
 
   socket.emit('addProduct', product);
   form.reset();
 });
 
-socket.on('productList', (products) => {
+socket.on('products', (products) => {
   productList.innerHTML = '';
-  products.forEach((product) => {
+  products.forEach((p) => {
     const li = document.createElement('li');
     li.innerHTML = `
-      <strong>${product.title}</strong> - $${product.price} (Stock: ${product.stock})
-      <button onclick="deleteProduct('${product.id}')">Eliminar</button>
+      <strong>${p.title}</strong> - $${p.price} (Stock: ${p.stock})
+      <button data-id="${p._id}">Eliminar</button>
     `;
+    const btn = li.querySelector('button');
+    btn.addEventListener('click', () => {
+      socket.emit('deleteProduct', p._id);
+    });
     productList.appendChild(li);
   });
 });
-
-function deleteProduct(id) {
-  socket.emit('deleteProduct', id);
-}

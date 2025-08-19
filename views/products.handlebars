@@ -1,0 +1,33 @@
+<h1>{{title}}</h1>
+
+<form id="filterForm">
+  <input type="text" name="query" placeholder="Categoría o disponibilidad" value="{{query}}" />
+  <select name="sort">
+    <option value="">Ordenar por precio</option>
+    <option value="asc" {{#ifCond sort 'asc'}}selected{{/ifCond}}>Ascendente</option>
+    <option value="desc" {{#ifCond sort 'desc'}}selected{{/ifCond}}>Descendente</option>
+  </select>
+  <button type="submit">Filtrar</button>
+</form>
+
+<ul>
+  {{#each products}}
+  <li>
+    <strong>{{this.title}}</strong> - ${{this.price}} (Stock: {{this.stock}})
+    <form action="/api/carts/{{cartId}}/products/{{this._id}}" method="POST" style="display:inline;">
+      <button type="submit">Agregar al carrito</button>
+    </form>
+    <a href="/products/{{this._id}}">Ver detalles</a>
+  </li>
+  {{/each}}
+</ul>
+
+<div>
+  {{#if hasPrevPage}}
+    <a href="?page={{prevPage}}&limit={{limit}}&query={{query}}&sort={{sort}}">Página anterior</a>
+  {{/if}}
+  Página {{page}} de {{totalPages}}
+  {{#if hasNextPage}}
+    <a href="?page={{nextPage}}&limit={{limit}}&query={{query}}&sort={{sort}}">Página siguiente</a>
+  {{/if}}
+</div>
